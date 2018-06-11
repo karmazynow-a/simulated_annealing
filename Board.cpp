@@ -2,7 +2,7 @@
 #include <cmath>
 #include <fstream>
 
-#define MAX_IT 10000
+#define MAX_IT 1000
 
 Board::Board (unsigned n): m_n(n){
     std::ifstream file ("data.dat");
@@ -20,7 +20,7 @@ Board::Board (unsigned n): m_n(n){
     file.close();
 
     for (auto el : m_V)
-        shortest_path.emplace_back(el);
+        m_shortestPath.emplace_back(el);
 }
 
 void Board::printBoard() const{
@@ -45,12 +45,12 @@ void Board::printBoard() const{
         std::cout<<std::endl;
     }
 
-std::vector<std::pair<int, int>> Board::simulatedAnnealing(){
+void Board::simulatedAnnealing(){
     std::vector<std::pair<int, int>> P;
-    P = shortest_path;
+    P = m_shortestPath;
 
     for (int i {100}; i>=1; --i){
-        std::cout << "obecna najkrotsza scierzka ma dlugosc " << d(P) <<std::endl;
+        //std::cout << "obecna najkrotsza scierzka ma dlugosc " << d(P) <<std::endl;
         double T = 0.001 * i * i;
         for (int it {}; it <= MAX_IT; ++it){
                 std::vector<std::pair<int, int>> Pnew = randomize(P);
@@ -58,27 +58,24 @@ std::vector<std::pair<int, int>> Board::simulatedAnnealing(){
                     P = Pnew;
                 else{
                     double x{(double) rand() / (RAND_MAX)};
-                    if (x < exp ((d(P) - d(Pnew))/T)){
+                    if (x < exp((d(P) - d(Pnew))/T)){
                         P = Pnew;
                     }
                 }
         }
     }
 
-    if (d(shortest_path) > d(P)){
-        shortest_path.clear();
+    if (d(m_shortestPath) > d(P)){
+        m_shortestPath.clear();
         for (int i{}; i < P.size(); ++i){
-            shortest_path.emplace_back(std::make_pair(P[i].first, P[i].second));
+            m_shortestPath.emplace_back(std::make_pair(P[i].first, P[i].second));
         }
     }
-
-
-    return P;
 }
 
 std::vector<std::pair<int, int>> randomize (std::vector<std::pair<int, int>> P){
     std::vector<std::pair<int, int>> Pnew {P};
-    int a, b, c, d; //indeksy!
+    int a, b, c, d;
 
     do{
         a = rand()%10;
@@ -111,11 +108,6 @@ double d(std::vector<std::pair<int, int>> P){
     return sum;
 }
 
-bool is_in (int a, int b, std::vector<std::pair<int, int>> P){
-    if (a == b+1 || b == a+1)
-        return true;
-    return false;
-}
 
 void Board::generateFile (){
     std::ofstream file;

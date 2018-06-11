@@ -12,14 +12,14 @@ public:
 
     void printBoard() const;
 
-    std::vector<std::pair<int, int>> simulatedAnnealing();
+    void simulatedAnnealing();
+    std::vector<std::pair<int, int>> getShortestPath() const {return m_shortestPath;}
 private:
     void generateFile ();
     std::set<std::pair<int, int>> m_V;
-    std::vector<std::pair<int, int>> shortest_path;
+    std::vector<std::pair<int, int>> m_shortestPath;
     unsigned m_n; //size
 };
 
 std::vector<std::pair<int, int>> randomize (std::vector<std::pair<int, int>> P);
 double d(std::vector<std::pair<int, int>> P);
-bool is_in (int a, int b, std::vector<std::pair<int, int>> P);

@@ -1,27 +1,23 @@
 #include <iostream>
-
-
 #include "Board.h"
-#include<time.h>
 
-
-#define SIZE 50
+#define SIZE 101
 
 int main()
 {
     Board board(SIZE);
     //board.printBoard();
-    std::vector<std::pair<int, int>> shortest_path = board.simulatedAnnealing();
-    for (auto el : shortest_path)
-       std::cout<< el.first <<" "<< el.second <<std::endl;
 
-    shortest_path = board.simulatedAnnealing();
-    for (auto el : shortest_path)
-       std::cout<< el.first <<" "<< el.second <<std::endl;
+    for (unsigned i{}; i<10; ++i){
+        board.simulatedAnnealing();
+    }
 
-    shortest_path = board.simulatedAnnealing();
-    for (auto el : shortest_path)
+    std::vector<std::pair<int, int>> path = board.getShortestPath();
+    std::cout<< "Length of path: " << d(path) <<std::endl;
+    std::cout<< "Path: "<<std::endl;
+/*
+    for (auto el : path)
        std::cout<< el.first <<" "<< el.second <<std::endl;
-
+*/
     return 0;
 }
