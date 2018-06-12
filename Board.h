@@ -14,6 +14,7 @@ public:
 
     void simulatedAnnealing();
     std::vector<std::pair<int, int>> getShortestPath() const {return m_shortestPath;}
+    void printShortestPath() const;
 private:
     void generateFile ();
     std::set<std::pair<int, int>> m_V;

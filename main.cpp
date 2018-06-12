@@ -12,12 +12,7 @@ int main()
         board.simulatedAnnealing();
     }
 
-    std::vector<std::pair<int, int>> path = board.getShortestPath();
-    std::cout<< "Length of path: " << d(path) <<std::endl;
-    std::cout<< "Path: "<<std::endl;
-/*
-    for (auto el : path)
-       std::cout<< el.first <<" "<< el.second <<std::endl;
-*/
+    board.printShortestPath();
+
     return 0;
 }

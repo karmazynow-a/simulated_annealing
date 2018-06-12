@@ -128,3 +128,12 @@ void Board::generateFile (){
     }
     file.close();
 }
+
+void Board::printShortestPath() const{
+    std::cout<< "Length of path: " << d(m_shortestPath) <<std::endl;
+    std::cout<< "Path: "<<std::endl;
+/*
+    for (auto el : m_shortestPath)
+       std::cout<< el.first <<" "<< el.second <<std::endl;
+       */
+}
