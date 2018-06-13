@@ -1,12 +1,11 @@
 #include <iostream>
 #include "Board.h"
 
-#define SIZE 101
-
 int main()
 {
-    Board board(SIZE);
-    //board.printBoard();
+    Board board(20, true);
+
+    //board.printShortestPath();
 
     for (unsigned i{}; i<10; ++i){
         board.simulatedAnnealing();

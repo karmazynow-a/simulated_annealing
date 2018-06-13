@@ -8,7 +8,7 @@
 
 class Board{
 public:
-    Board (unsigned n = 20);
+    Board (unsigned n = 20, bool competition = false);
 
     void printBoard() const;
 
@@ -22,5 +22,5 @@ private:
     unsigned m_n; //size
 };
 
-std::vector<std::pair<int, int>> randomize (std::vector<std::pair<int, int>> P);
+std::vector<std::pair<int, int>> randomize (std::vector<std::pair<int, int>> P, int max);
 double d(std::vector<std::pair<int, int>> P);

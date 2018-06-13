@@ -1,16 +1,28 @@
 #include "Board.h"
 #include <cmath>
 #include <fstream>
+#include <string>
 
 #define MAX_IT 1000
 
-Board::Board (unsigned n): m_n(n){
-    std::ifstream file ("data.dat");
-
-    if (!file.is_open()){
-        generateFile();
-        file.open("data.dat");
+Board::Board (unsigned n, bool competition){
+    std::ifstream file;
+    if (competition){
+        file.open("competition.dat");
+        m_n = 101;
     }
+
+    else{
+        file.open("data.dat");
+        //generateFile();
+        m_n = n;
+
+        if (!file.is_open()){
+            generateFile();
+            file.open("data.dat");
+        }
+    }
+    
 
     int i, a, b;
     while ( file >> i >> a >> b){
@@ -53,7 +65,7 @@ void Board::simulatedAnnealing(){
         //std::cout << "obecna najkrotsza scierzka ma dlugosc " << d(P) <<std::endl;
         double T = 0.001 * i * i;
         for (int it {}; it <= MAX_IT; ++it){
-                std::vector<std::pair<int, int>> Pnew = randomize(P);
+                std::vector<std::pair<int, int>> Pnew = randomize(P, m_n);
                 if (d(Pnew) < d(P))
                     P = Pnew;
                 else{
@@ -63,7 +75,10 @@ void Board::simulatedAnnealing(){
                     }
                 }
         }
+
     }
+
+    //std::cout <<"długość starej ścieżki: "<<d(m_shortestPath)<< " i nowo obliczonej: "<<d(P)<<std::endl;
 
     if (d(m_shortestPath) > d(P)){
         m_shortestPath.clear();
@@ -73,18 +88,18 @@ void Board::simulatedAnnealing(){
     }
 }
 
-std::vector<std::pair<int, int>> randomize (std::vector<std::pair<int, int>> P){
+std::vector<std::pair<int, int>> randomize (std::vector<std::pair<int, int>> P, int max){
     std::vector<std::pair<int, int>> Pnew {P};
     int a, b, c, d;
 
     do{
-        a = rand()%10;
+        a = rand()%max;
         if (a == P.size()-1)
             b = 0;
         else
             b = a+1;
 
-        c = rand()%10;
+        c = rand()%max;
         if (c == P.size()-1)
             d = 0;
         else
@@ -132,8 +147,10 @@ void Board::generateFile (){
 void Board::printShortestPath() const{
     std::cout<< "Length of path: " << d(m_shortestPath) <<std::endl;
     std::cout<< "Path: "<<std::endl;
-/*
+
+    std::ofstream file("path.txt");    
     for (auto el : m_shortestPath)
-       std::cout<< el.first <<" "<< el.second <<std::endl;
-       */
+       file << el.first <<" "<< el.second <<std::endl;
+       
+    file.close();
 }
