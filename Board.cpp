@@ -3,26 +3,24 @@
 #include <fstream>
 #include <string>
 
-#define MAX_IT 1000
+#define MAX_IT 10000
 
 Board::Board (unsigned n, bool competition){
     std::ifstream file;
     if (competition){
         file.open("competition.dat");
-        m_n = 101;
     }
 
     else{
         file.open("data.dat");
         //generateFile();
-        m_n = n;
 
         if (!file.is_open()){
             generateFile();
             file.open("data.dat");
         }
     }
-    
+
 
     int i, a, b;
     while ( file >> i >> a >> b){
@@ -33,6 +31,8 @@ Board::Board (unsigned n, bool competition){
 
     for (auto el : m_V)
         m_shortestPath.emplace_back(el);
+
+    m_n = m_shortestPath.size();
 }
 
 void Board::printBoard() const{
@@ -148,9 +148,9 @@ void Board::printShortestPath() const{
     std::cout<< "Length of path: " << d(m_shortestPath) <<std::endl;
     std::cout<< "Path: "<<std::endl;
 
-    std::ofstream file("path.txt");    
+    std::ofstream file("path.txt");
     for (auto el : m_shortestPath)
        file << el.first <<" "<< el.second <<std::endl;
-       
+
     file.close();
 }
