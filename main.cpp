@@ -3,11 +3,11 @@
 
 int main()
 {
-    Board board(20, true);
+    Board board;
 
-    //board.printShortestPath();
+    board.printShortestPath();
 
-    for (unsigned i{}; i<10; ++i){
+    for (unsigned i{}; i<20 && board.isTimeOk(); ++i){
         board.simulatedAnnealing();
     }
 

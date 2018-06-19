@@ -3,29 +3,23 @@
 #include <fstream>
 #include <string>
 
-#define MAX_IT 10000
 
-Board::Board (unsigned n, bool competition){
+#define MAX_IT 1000000
+
+Board::Board (){
     std::ifstream file;
-    if (competition){
-        file.open("competition.dat");
-    }
 
-    else{
-        file.open("data.dat");
-        //generateFile();
+    m_timer=std::clock();
+    time_ok = true;
 
-        if (!file.is_open()){
-            generateFile();
-            file.open("data.dat");
-        }
-    }
-
+    file.open("competition.txt");
+    if(!file.is_open())
+        std::cout<<"problem z plikiem";
 
     int i, a, b;
     while ( file >> i >> a >> b){
-      m_V.emplace(std::make_pair(a, b));
-      std::cout<<a <<" "<<b<<std::endl;
+      m_V.emplace_back(Point (i, a, b));
+      std::cout<<i<<" " <<a <<" "<<b<<std::endl;
     }
     file.close();
 
@@ -35,37 +29,21 @@ Board::Board (unsigned n, bool competition){
     m_n = m_shortestPath.size();
 }
 
-void Board::printBoard() const{
-        std::cout.width(1);
-        for (int i{}; i<m_n+1; ++i)
-            std::cout<<"--";
-        std::cout<<std::endl;
-
-        for (int i{}; i<m_n; ++i){
-            std::cout<<"|";
-            for (int j{}; j<m_n; ++j){
-                if (m_V.find(std::make_pair(i,j))!= m_V.end())
-                    std::cout<<1<<" ";
-                else
-                    std::cout<<0<<" ";
-            }
-            std::cout<<"|"<<std::endl;
-        }
-
-        for (int i{}; i<m_n+1; ++i)
-            std::cout<<"--";
-        std::cout<<std::endl;
-    }
 
 void Board::simulatedAnnealing(){
-    std::vector<std::pair<int, int>> P;
+    std::vector<Point> P;
     P = m_shortestPath;
 
     for (int i {100}; i>=1; --i){
         //std::cout << "obecna najkrotsza scierzka ma dlugosc " << d(P) <<std::endl;
         double T = 0.001 * i * i;
         for (int it {}; it <= MAX_IT; ++it){
-                std::vector<std::pair<int, int>> Pnew = randomize(P, m_n);
+                if (clock() > m_timer + 1000*60*30){
+                    time_ok = false;
+                    goto EXIT;
+                    }
+
+                std::vector<Point> Pnew = randomize(P, m_n);
                 if (d(Pnew) < d(P))
                     P = Pnew;
                 else{
@@ -79,17 +57,18 @@ void Board::simulatedAnnealing(){
     }
 
     //std::cout <<"długość starej ścieżki: "<<d(m_shortestPath)<< " i nowo obliczonej: "<<d(P)<<std::endl;
-
+    EXIT:
     if (d(m_shortestPath) > d(P)){
         m_shortestPath.clear();
         for (int i{}; i < P.size(); ++i){
-            m_shortestPath.emplace_back(std::make_pair(P[i].first, P[i].second));
+            m_shortestPath.emplace_back(Point(P[i].m_i, P[i].m_a, P[i].m_b));
         }
     }
 }
 
-std::vector<std::pair<int, int>> randomize (std::vector<std::pair<int, int>> P, int max){
-    std::vector<std::pair<int, int>> Pnew {P};
+
+std::vector<Point> randomize (std::vector<Point> P, int max){
+    std::vector<Point> Pnew {P};
     int a, b, c, d;
 
     do{
@@ -114,34 +93,13 @@ std::vector<std::pair<int, int>> randomize (std::vector<std::pair<int, int>> P, 
     return Pnew;
 }
 
-double d(std::vector<std::pair<int, int>> P){
+double d(std::vector<Point> P){
     double sum {};
     for (int i{}; i<P.size()-1; ++i){
-        sum += sqrt(pow(P[i+1].first - P[i].first, 2) + pow(P[i+1].second - P[i].second, 2));
+        sum += sqrt(pow(P[i+1].m_a - P[i].m_a, 2) + pow(P[i+1].m_b - P[i].m_b, 2));
     }
-    sum += sqrt(pow(P.back().first - P[0].first, 2) + pow(P.back().second - P[0].second, 2));
+    sum += sqrt(pow(P.back().m_a - P[0].m_a, 2) + pow(P.back().m_b - P[0].m_b, 2));
     return sum;
-}
-
-
-void Board::generateFile (){
-    std::ofstream file;
-    file.open ("data.dat");
-
-    std::set<std::pair<int, int>> data;
-    srand(time(0));
-
-    for (unsigned i{}; i<m_n; ){
-        int a = rand()%m_n;
-        int b = rand()%m_n;
-
-        if (data.find(std::make_pair(a,b))== data.end()){
-            data.emplace(std::make_pair(a,b));
-            file << i << " " << a << " " << b <<std::endl;
-            ++i;
-        }
-    }
-    file.close();
 }
 
 void Board::printShortestPath() const{
@@ -149,8 +107,9 @@ void Board::printShortestPath() const{
     std::cout<< "Path: "<<std::endl;
 
     std::ofstream file("path.txt");
+    file << "Len: " << d(m_shortestPath) <<std::endl;
     for (auto el : m_shortestPath)
-       file << el.first <<" "<< el.second <<std::endl;
+       file << el.m_i << " " << el.m_a <<" "<< el.m_b <<std::endl;
 
     file.close();
 }
