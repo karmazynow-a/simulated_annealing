@@ -4,12 +4,12 @@
 #include <string>
 
 
-#define MAX_IT 1000000
+#define MAX_IT 10000
 
 Board::Board (){
     std::ifstream file;
 
-    m_timer=std::clock();
+    m_timer = std::chrono::system_clock::now();
     time_ok = true;
 
     file.open("competition.txt");
@@ -19,7 +19,7 @@ Board::Board (){
     int i, a, b;
     while ( file >> i >> a >> b){
       m_V.emplace_back(Point (i, a, b));
-      std::cout<<i<<" " <<a <<" "<<b<<std::endl;
+      //std::cout<<i<<" " <<a <<" "<<b<<std::endl;
     }
     file.close();
 
@@ -38,7 +38,9 @@ void Board::simulatedAnnealing(){
         //std::cout << "obecna najkrotsza scierzka ma dlugosc " << d(P) <<std::endl;
         double T = 0.001 * i * i;
         for (int it {}; it <= MAX_IT; ++it){
-                if (clock() > m_timer + 1000*60*30){
+                std::chrono::duration<double> period = std::chrono::system_clock::now() - m_timer;
+                if (period > std::chrono::minutes(30) ){
+                    std::cout << period.count() <<std::endl;
                     time_ok = false;
                     goto EXIT;
                     }
@@ -53,7 +55,6 @@ void Board::simulatedAnnealing(){
                     }
                 }
         }
-
     }
 
     //std::cout <<"długość starej ścieżki: "<<d(m_shortestPath)<< " i nowo obliczonej: "<<d(P)<<std::endl;

@@ -4,7 +4,7 @@
 #include <vector>
 #include <set>
 #include <utility>
-#include <ctime>
+#include <chrono>
 
 struct Point{
     Point (int i=0, int a=0, int b=0) : m_a(a), m_b(b), m_i(i) {}
@@ -27,7 +27,7 @@ private:
     std::vector<Point> m_V;
     std::vector<Point> m_shortestPath;
     unsigned m_n; //size
-    std::clock_t m_timer;
+    std::chrono::system_clock::time_point m_timer;
     bool time_ok;
 };
 
