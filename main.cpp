@@ -6,7 +6,8 @@ int main()
     Board board;
     //board.printShortestPath();
 
-    for (unsigned i{}; i<10 && board.isTimeOk(); ++i){
+    std::cout<<"Start"<<std::endl;
+    while (board.isTimeOk()){
         board.simulatedAnnealing();
     }
 

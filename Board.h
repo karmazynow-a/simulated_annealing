@@ -21,15 +21,17 @@ public:
     Board ();
     void simulatedAnnealing();
     std::vector<Point> getShortestPath() const {return m_shortestPath;}
-    void printShortestPath() const;
+    void printShortestPath();
     bool isTimeOk() const {return time_ok;}
+    double d(std::vector<Point> P);
 private:
     std::vector<Point> m_V;
     std::vector<Point> m_shortestPath;
+    std::vector<std::vector<double>> m_distances;
     unsigned m_n; //size
     std::chrono::system_clock::time_point m_timer;
     bool time_ok;
 };
 
 std::vector<Point> randomize (std::vector<Point> P, int max);
-double d(std::vector<Point> P);
+

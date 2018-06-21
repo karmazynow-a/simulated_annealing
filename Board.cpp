@@ -4,7 +4,7 @@
 #include <string>
 
 
-#define MAX_IT 10000
+#define MAX_IT 1000000
 
 Board::Board (){
     std::ifstream file;
@@ -19,12 +19,24 @@ Board::Board (){
     int i, a, b;
     while ( file >> i >> a >> b){
       m_V.emplace_back(Point (i, a, b));
-      //std::cout<<i<<" " <<a <<" "<<b<<std::endl;
     }
     file.close();
 
+    ++i;
+    m_distances.resize(i);
+    for (auto &el : m_distances)
+        el.resize(i);
+
+    m_distances[0][0] = 3.14;
+
     for (auto el : m_V)
         m_shortestPath.emplace_back(el);
+
+    for (auto el : m_V){
+        for (auto o : m_V){
+            m_distances[el.m_i][o.m_i] = sqrt(pow(el.m_a - o.m_a, 2) + pow(el.m_b - o.m_b, 2));
+        }
+    }
 
     m_n = m_shortestPath.size();
 }
@@ -40,7 +52,7 @@ void Board::simulatedAnnealing(){
         for (int it {}; it <= MAX_IT; ++it){
                 std::chrono::duration<double> period = std::chrono::system_clock::now() - m_timer;
                 if (period > std::chrono::minutes(30) ){
-                    std::cout << period.count() <<std::endl;
+                    std::cout << "Czas, który upłyną" << period.count() <<std::endl;
                     time_ok = false;
                     goto EXIT;
                     }
@@ -65,6 +77,7 @@ void Board::simulatedAnnealing(){
             m_shortestPath.emplace_back(Point(P[i].m_i, P[i].m_a, P[i].m_b));
         }
     }
+    std::cout<<d(m_shortestPath)<<std::endl;
 }
 
 
@@ -94,16 +107,16 @@ std::vector<Point> randomize (std::vector<Point> P, int max){
     return Pnew;
 }
 
-double d(std::vector<Point> P){
+double Board::d(std::vector<Point> P){
     double sum {};
     for (int i{}; i<P.size()-1; ++i){
-        sum += sqrt(pow(P[i+1].m_a - P[i].m_a, 2) + pow(P[i+1].m_b - P[i].m_b, 2));
+        sum += m_distances[P[i].m_i][P[i+1].m_i];
     }
-    sum += sqrt(pow(P.back().m_a - P[0].m_a, 2) + pow(P.back().m_b - P[0].m_b, 2));
+    sum += m_distances[P.back().m_i][P[0].m_i];
     return sum;
 }
 
-void Board::printShortestPath() const{
+void Board::printShortestPath(){
     std::cout<< "Length of path: " << d(m_shortestPath) <<std::endl;
     std::cout<< "Path: "<<std::endl;
 
