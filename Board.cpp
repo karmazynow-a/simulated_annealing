@@ -3,8 +3,7 @@
 #include <fstream>
 #include <string>
 
-
-#define MAX_IT 1000000
+#define MAX_IT 100000
 
 Board::Board (){
     std::ifstream file;
