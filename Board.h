@@ -23,7 +23,7 @@ public:
     std::vector<Point> getShortestPath() const {return m_shortestPath;}
     void printShortestPath();
     bool isTimeOk() const {return time_ok;}
-    double d(std::vector<Point> P);
+    double d(std::vector<Point> &P);
 private:
     std::vector<Point> m_V;
     std::vector<Point> m_shortestPath;
@@ -33,5 +33,5 @@ private:
     bool time_ok;
 };
 
-std::vector<Point> randomize (std::vector<Point> P, int max);
+std::vector<Point> randomize (std::vector<Point> &P, int max);
 

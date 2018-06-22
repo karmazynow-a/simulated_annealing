@@ -73,7 +73,7 @@ void Board::simulatedAnnealing(){
 }
 
 
-std::vector<Point> randomize (std::vector<Point> P, int max){
+std::vector<Point> randomize (std::vector<Point> &P, int max){
     std::vector<Point> Pnew {P};
     int a, b, c, d;
 
@@ -99,7 +99,7 @@ std::vector<Point> randomize (std::vector<Point> P, int max){
     return Pnew;
 }
 
-double Board::d(std::vector<Point> P){
+double Board::d(std::vector<Point> &P){
     double sum {};
     for (int i{}; i<P.size()-1; ++i){
         sum += m_distances[P[i].m_i][P[i+1].m_i];
