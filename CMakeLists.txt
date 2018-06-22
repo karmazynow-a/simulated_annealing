@@ -4,4 +4,4 @@ project(SimulatedAnnealing)
 set(CMAKE_CXX_STANDARD 14)
 
 add_executable(SimulatedAnnealing main.cpp Board.cpp)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -Wall -g -pedantic -pedantic-errors -Wextra")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -Wall -O2 -pedantic -pedantic-errors -Wextra")

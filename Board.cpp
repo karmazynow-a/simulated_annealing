@@ -1,17 +1,13 @@
-#include "Board.h"
+﻿#include "Board.h"
 #include <cmath>
 #include <fstream>
 #include <string>
 
-#define MAX_IT 100000
+#define MAX_IT 1000000
 
-Board::Board (){
-    std::ifstream file;
+Board::Board () : m_timer (std::chrono::system_clock::now()), time_ok(true){
+    std::ifstream file("competition.txt");
 
-    m_timer = std::chrono::system_clock::now();
-    time_ok = true;
-
-    file.open("competition.txt");
     if(!file.is_open())
         std::cout<<"problem z plikiem";
 
@@ -26,8 +22,6 @@ Board::Board (){
     for (auto &el : m_distances)
         el.resize(i);
 
-    m_distances[0][0] = 3.14;
-
     for (auto el : m_V)
         m_shortestPath.emplace_back(el);
 
@@ -38,12 +32,12 @@ Board::Board (){
     }
 
     m_n = m_shortestPath.size();
+    std::cout<<"File loaded, elements: "<< m_n << std::endl;
 }
 
 
 void Board::simulatedAnnealing(){
-    std::vector<Point> P;
-    P = m_shortestPath;
+    std::vector<Point> P {m_shortestPath};
 
     for (int i {100}; i>=1; --i){
         //std::cout << "obecna najkrotsza scierzka ma dlugosc " << d(P) <<std::endl;
@@ -68,7 +62,6 @@ void Board::simulatedAnnealing(){
         }
     }
 
-    //std::cout <<"długość starej ścieżki: "<<d(m_shortestPath)<< " i nowo obliczonej: "<<d(P)<<std::endl;
     EXIT:
     if (d(m_shortestPath) > d(P)){
         m_shortestPath.clear();
